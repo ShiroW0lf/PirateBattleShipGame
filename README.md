@@ -1,2 +1,2 @@
-# PirateBattleShipGame
-repo for my game development class - Aswin
+# PirateBattleShipGame ( game development class - Aswin)
+
