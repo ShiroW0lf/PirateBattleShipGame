@@ -1,26 +1,41 @@
 package src;
 
-import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 
 public class Boat {
     private int x, y;
     private int dx, dy;
-    private final int WIDTH = 50;
-    private final int HEIGHT = 30;
+    private BufferedImage boatImage;
     
     private final int startX;
     private final int startY;
     
-    // Speed factor for boat movement
-    private final int speed = 2;
-
+    // Add the dimensions for the boat image
+    private final int WIDTH = 50;  // Adjust based on actual image size
+    private final int HEIGHT = 30; // Adjust based on actual image size
+    
+    private final int speed = 2; // Controls the speed of the boat
+    
     public Boat(int startX, int startY) {
         this.startX = startX;
         this.startY = startY;
         resetPosition();
+        loadBoatImage();
+    }
+
+    private void loadBoatImage() {
+        try {
+            // Load the boat image from assets folder
+            boatImage = ImageIO.read(new File("src/assets/boat.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void resetPosition() {
@@ -36,8 +51,9 @@ public class Boat {
     }
 
     public void draw(Graphics g) {
-        g.setColor(new Color(139, 69, 19));  // Boat color - brown
-        g.fillRect(x, y, WIDTH, HEIGHT);
+        if (boatImage != null) {
+            g.drawImage(boatImage, x, y, WIDTH, HEIGHT, null);
+        }
     }
 
     public void setDirection(int key) {

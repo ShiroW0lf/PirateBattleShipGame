@@ -1,43 +1,55 @@
 package src;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.awt.event.KeyEvent;
-import java.util.Random;
-
-
 
 public class GameCanvas extends JPanel {
-    private int screenWidth = 800;
-    private int screenHeight = 600;
+    private int screenWidth = 1000;
+    private int screenHeight = 800;
     private ArrayList<Rock> rocks;
     private Boat boat;
     private boolean gameOver;  // Tracks if the game is over
     private boolean onTitleScreen = true;  // Title screen flag
+    private Image seaBackground;
 
     public GameCanvas() {
         rocks = new ArrayList<>();
-        generateStaticRocks();  // Static rocks generated once
+        generateRocks();  // Static rocks generated once
         boat = new Boat(100, screenHeight / 2);  // Start the boat in the middle
         gameOver = false;  // Game starts with gameOver set to false
         setUpMouseListener();  // Set up mouse listener for clicking "Start Game"
+        loadSeaBackground();  // Load the sea background
     }
 
-    // Static map generation (only once when the game is initialized)
-    public void generateStaticRocks() {
-        Random rand = new Random();
-        for (int i = 0; i < 15; i++) {  // 15 static rocks placed
-            int rockX = 150 + rand.nextInt(screenWidth - 200);  // Avoid right edge
-            int rockY = 100 + rand.nextInt(screenHeight - 150);  // Avoid top and bottom edges
-            int rockSize = 40 + rand.nextInt(40);
-            rocks.add(new Rock(rockX, rockY, rockSize, rockSize));
-        }
+    public void generateRocks() {
+        // Add small rocks
+        rocks.add(new Rock(200, 200, 50, 50, "src/assets/rock1.png"));  // Small rock
+        rocks.add(new Rock(500, 150, 60, 60, "src/assets/rock2.png"));  // Small rock
+        rocks.add(new Rock(650, 400, 55, 55, "src/assets/rock3.png"));  // Small rock
+        
+        // Add medium rocks
+        rocks.add(new Rock(300, 300, 100, 100, "src/assets/rock1.png"));  // Medium rock
+        rocks.add(new Rock(600, 250, 110, 110, "src/assets/rock2.png"));  // Medium rock
+        rocks.add(new Rock(700, 400, 90, 90, "src/assets/rock3.png"));  // Medium rock
+        
+        // Add large rocks
+        rocks.add(new Rock(800, 650, 150, 150, "src/assets/rock1.png"));  // Large rock
+        rocks.add(new Rock(600, 100, 120, 130, "src/assets/rock2.png"));  // Large rock
+        rocks.add(new Rock(750, 750, 140, 140, "src/assets/rock3.png"));  // Large rock
+        
+        // Add extra rocks for variety
+        rocks.add(new Rock(550, 350, 70, 70, "src/assets/rock1.png"));   // Small-medium rock
+        rocks.add(new Rock(350, 150, 80, 80, "src/assets/rock2.png"));   // Medium rock
+        rocks.add(new Rock(450, 450, 60, 60, "src/assets/rock3.png"));   // Small rock
     }
+    
 
     // Mouse listener for the "Start Game" button on the title screen
     private void setUpMouseListener() {
@@ -119,10 +131,19 @@ public class GameCanvas extends JPanel {
         g.drawString("Press 'R' to Restart", screenWidth / 2 - 100, screenHeight / 2 + 20);
     }
 
+    private void loadSeaBackground() {
+        try {
+            seaBackground = ImageIO.read(new File("src/assets/sea.gif"));  // Load sea background
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void drawGameElements(Graphics g) {
-        // Draw the sea (map)
-        g.setColor(Color.CYAN);
-        g.fillRect(0, 0, screenWidth, screenHeight);
+        // Draw sea background
+        if (seaBackground != null) {
+            g.drawImage(seaBackground, 0, 0, screenWidth, screenHeight, null);
+        }
 
         // Draw rocks
         for (Rock rock : rocks) {
